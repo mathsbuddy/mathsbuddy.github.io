@@ -58,9 +58,15 @@
     .close{cursor:pointer;float:right;opacity:.8}
     .copy{cursor:pointer}
 
-    /* Toast popup */
+    /* Toast popup (kept for copy-to-clipboard) */
     .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;transition:all .25s ease;z-index:80;background:rgba(0,0,0,.6);color:#fff;padding:12px 16px;border-radius:999px;border:1px solid var(--stroke);backdrop-filter: blur(8px) saturate(140%)}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* Center popup modal for thank-you */
+    .popup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:100}
+    .popup.show{display:flex}
+    .popup-card{background:#fff;color:#333;padding:20px 26px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);text-align:center;max-width:340px;width:92%}
+    .popup-card p{margin:0 0 16px;font-size:1.1rem}
   </style>
 </head>
 <body>
@@ -189,7 +195,15 @@
       </div>
     </div>
 
-    <!-- Toast popup container -->
+    <!-- Thank You Popup Modal -->
+    <div id="thankYouPopup" class="popup" role="dialog" aria-modal="true" aria-label="Message sent">
+      <div class="popup-card">
+        <p>Thank you ! will get back you to.</p>
+        <button id="popupOkBtn" class="btn primary">OK</button>
+      </div>
+    </div>
+
+    <!-- Toast popup container (used for copy-to-clipboard only) -->
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <footer>
@@ -223,7 +237,10 @@
     const remember=document.getElementById('rememberChoice');
     const chooserClose=document.getElementById('chooserClose');
     const emailDirectBtn=document.getElementById('emailDirectBtn');
+
     const toastEl=document.getElementById('toast');
+    const popup=document.getElementById('thankYouPopup');
+    const popupOkBtn=document.getElementById('popupOkBtn');
 
     const TO = 'mathbuddy12@gmail.com';
 
@@ -236,6 +253,11 @@
       toastEl.classList.add('show');
       setTimeout(()=> toastEl.classList.remove('show'), 2600);
     }
+
+    function showPopup(){
+      popup?.classList.add('show');
+    }
+    popupOkBtn?.addEventListener('click',()=>{ popup?.classList.remove('show'); });
 
     function buildBody(parent,grade,locationSel,time,length,topics){
       return `Hi Hritvik,\n\n`+
@@ -270,4 +292,69 @@
       };
       const url = map[pref];
       if(url){
-        if(pref==='mailto'){
+        if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); }
+        showPopup();
+        return true;
+      }
+      return false;
+    }
+
+    chooserClose?.addEventListener('click',()=>{ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); });
+    chooser?.addEventListener('click', (e)=>{ if(e.target===chooser){ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); } });
+
+    [linkMailto,linkGmail,linkOutlook,linkYahoo].forEach(link=>{
+      link.addEventListener('click',(e)=>{
+        e.preventDefault();
+        const id = link.id.replace('link','').toLowerCase();
+        if(remember.checked){ localStorage.setItem('mb_email_pref', id); }
+        const url = link.getAttribute('href');
+        if(id==='mailto'){ window.location.href = url; }
+        else { window.open(url, '_blank', 'noopener'); }
+        showPopup();
+        chooser.classList.remove('open');
+      });
+    });
+
+    emailDirectBtn?.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const subject='Math Tutoring Inquiry — MathsBuddy';
+      const body = buildBody('','','','','','');
+      if(!maybeAuto(subject, body)) openChooser(subject, body);
+    });
+
+    form?.addEventListener('submit',(e)=>{
+      e.preventDefault();
+      const data=new FormData(form);
+      const parent=(data.get('parent')||'').toString().trim();
+      const grade=(data.get('grade')||'').toString();
+      const locationSel=(data.get('location')||'').toString();
+      const topics=(data.get('topics')||'').toString().trim();
+      const time=(data.get('time')||'').toString();
+      const length=(data.get('length')||'').toString();
+      if(!parent||!grade||!topics||!locationSel||!time||!length){
+        msg.textContent='Please fill in all required fields: name, grade, location, preferred time, session length, and topics.';return;
+      }
+      const subject='Math Tutoring Request — MathsBuddy';
+      const body = buildBody(parent,grade,locationSel,time,length,topics);
+
+      if(!maybeAuto(subject, body)){
+        openChooser(subject, body);
+        msg.innerHTML = 'Choose your email app above. If nothing opens, you can also copy the address.';
+      }
+    });
+
+    copyAddr?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(TO); showToast('Email copied'); }catch{ showToast('Copy failed'); }
+    });
+
+    (function runTests(){
+      console.assert(shouldScroll('#help')===true, 'should scroll for #help');
+      console.assert(shouldScroll('#request')===true, 'should scroll for #request');
+      console.assert(shouldScroll('https://mail.google.com')===false, 'should not scroll for external URLs');
+      console.assert(shouldScroll('mailto:test@example.com')===false, 'should not scroll for mailto links');
+      console.assert(document.getElementById('copyAddr').textContent.includes('mathbuddy12@gmail.com'), 'TO shows in UI');
+      console.log('[MathsBuddy] Inline tests passed');
+    })();
+  </script>
+</body>
+</html>
