@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>the mathbuddy — Weekend Math Tutoring at the Library</title>
+  <meta name="description" content="Grade 9 ace student Hritvik offers friendly, reliable weekend math tutoring at your local library. Homework help, test prep, and math confidence building." />
+  <meta property="og:title" content="the mathbuddy — Weekend Math Tutoring" />
+  <meta property="og:description" content="Weekend math tutoring at the library by Hritvik (Grade 9, Earl of March HS)." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0ea5a6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' ry='12' fill='%230ea5a6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='700' font-size='34'%3EM%3C/text%3E%3C/svg%3E" />
+  <style>
+    :root{
+      --teal: #0ea5a6;           /* teal-blue */
+      --teal-dark: #0b8485;
+      --teal-900: #0a6b6c;
+      --bg: linear-gradient(135deg, #0ea5a6, #0b8485 60%, #0a6b6c);
+      --white: #ffffff;
+      --ink: #f8fafc;
+      --muted: rgba(255,255,255,.8);
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.18);
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius-xl: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--ink);
+      letter-spacing:.2px;
+    }
+    a{color:var(--white); text-decoration:none}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    header{
+      position:sticky; top:0; z-index:40;
+      backdrop-filter: saturate(140%) blur(8px);
+      background: linear-gradient(180deg, rgba(10,107,108,.85), rgba(10,107,108,.55));
+      border-bottom:1px solid var(--stroke);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{display:inline-grid; place-items:center; width:44px; height:44px; border-radius:12px; background:var(--white); color:var(--teal-900); font-weight:800}
+    .brand h1{margin:0; font-size:1.25rem; letter-spacing:.4px}
+    .nav a{opacity:.9}
+    .links{display:flex; gap:18px; flex-wrap:wrap}
+
+    .hero{padding:64px 0 32px}
+    .hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:28px}
+    .hero h2{font-size:clamp(2rem, 5vw, 3rem); margin:0 0 12px; line-height:1.1}
+    .hero p{font-size:1.05rem; margin:.5rem 0 1.25rem; color:var(--muted)}
+
+    .cta{display:flex; gap:14px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; border:1px solid var(--stroke); box-shadow:var(--shadow); transition:.2s transform}
+    .btn:hover{transform:translateY(-2px)}
+    .btn.primary{background:var(--white); color:var(--teal-900); font-weight:700}
+    .btn.ghost{background:transparent; color:var(--white)}
+
+    .card{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius-xl); padding:22px; box-shadow: var(--shadow)}
+
+    .pill{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--stroke); background:rgba(255,255,255,.09); color:var(--muted); font-size:.9rem}
+
+    .grid{display:grid; gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3, 1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2, 1fr)}
+
+    .section{padding:30px 0}
+    .section h3{margin:0 0 12px; font-size:1.6rem}
+    .muted{color:var(--muted)}
+    .list{margin:0; padding-left:18px}
+
+    .pricing .price{font-size:2rem; font-weight:800; letter-spacing:.5px}
+
+    form{display:grid; gap:12px}
+    input, select, textarea{
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--stroke);
+      background: rgba(255,255,255,.12); color:var(--white);
+    }
+    input::placeholder, textarea::placeholder{color:rgba(255,255,255,.6)}
+    label{font-size:.95rem; color:var(--muted)}
+    .fineprint{font-size:.85rem; color:var(--muted)}
+
+    footer{padding:28px 0 40px; border-top:1px solid var(--stroke); margin-top:32px}
+    .footer-grid{display:grid; gap:16px; grid-template-columns: 1.2fr .8fr}
+
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.12); border:1px solid var(--stroke); font-weight:600}
+
+    @media (max-width: 900px){
+      .hero-grid, .grid.cols-3, .grid.cols-2, .footer-grid{grid-template-columns:1fr}
+      .hero{padding-top:40px}
+      .links{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">Mb</span>
+        <h1>Mathbuddy <span class="muted" style="font-weight:500">· the mathbuddy</span></h1>
+      </div>
+      <nav class="links" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="pill">Weekend math tutoring at your local library</span>
+          <h2>Build math confidence with <em>the mathbuddy</em></h2>
+          <p>Hi! I’m <strong>Hritvik</strong>, a Grade 9 ace student at <strong>Earl of March High School</strong> in Canada. I love math and I love helping younger students understand it too — from homework help to test prep and problem‑solving strategies.</p>
+          <div class="cta" role="group" aria-label="Primary calls to action">
+            <a class="btn primary" href="tel:+12269809238">📞 Call: +1 (226) 980‑9238</a>
+            <a class="btn ghost" id="emailBtn" href="mailto:Mathbubby12@gmail.com?subject=Math%20Tutoring%20Inquiry%20-%20the%20mathbuddy&body=Hi%20Hritvik%2C%0A%0AMy%20child%27s%20name%3A%20%0AGrade%3A%20%0ATopics%20or%20goals%3A%20%0APreferred%20weekend%20time%3A%20%0ALibrary%20location%3A%20%0A%0AThank%20you!">✉️ Email Me</a>
+          </div>
+          <p class="fineprint">Available on weekends at the library. One‑to‑one sessions. Parent welcome to sit nearby.</p>
+        </div>
+        <div class="card" aria-label="Highlight">
+          <h3 style="margin-top:4px">What I can help with</h3>
+          <ul class="list">
+            <li>Homework help & study plans</li>
+            <li>Arithmetic, fractions, decimals, algebra basics</li>
+            <li>Problem‑solving and exam strategies</li>
+            <li>Review for quizzes & unit tests</li>
+            <li>Contest warm‑ups (e.g., Gauss, Caribou) — fundamentals</li>
+          </ul>
+          <div style="margin-top:10px" class="muted">Friendly, patient, and clear explanations — I meet students where they are.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>About Me</h3>
+          <p>I’m <strong>Hritvik</strong> (Logo: <strong>Mathbuddy</strong>, business name: <strong>the mathbuddy</strong>). As a math‑loving Grade 9 student, I’ve consistently excelled (“ace student”) and enjoy breaking down tough ideas into simple, memorable steps.</p>
+          <p>Teaching on weekends keeps things focused and fun. Sessions are hosted at a <strong>public library</strong> so it’s quiet, safe, and convenient for families.</p>
+        </div>
+        <div class="card">
+          <h3>How it works</h3>
+          <ol class="list">
+            <li><strong>Reach out</strong> by call or email with the student’s grade and goals.</li>
+            <li><strong>Pick a time</strong> on Saturday or Sunday and choose a library location.</li>
+            <li><strong>Meet up</strong> for a focused 60‑minute session (extendable if needed).</li>
+          </ol>
+          <p class="muted">I bring printed practice when needed. Parents can request progress notes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="section">
+      <h3>Services</h3>
+      <div class="grid cols-3">
+        <div class="card">
+          <h4 style="margin:0 0 6px">Homework Rescue</h4>
+          <p class="muted">Get unstuck on tricky questions and learn the method, not just the answer.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px">Skills Builder</h4>
+          <p class="muted">Strengthen foundations: operations, fractions, decimals, ratios, and intro algebra.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px">Test Readiness</h4>
+          <p class="muted">Practice under light time pressure with checklists and step‑by‑step solutions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING (no fixed rates shown) -->
+    <section id="pricing" class="section pricing">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Session Length</h3>
+          <p><span class="price">60 minutes</span> (extendable)</p>
+          <p class="muted">Ask about sibling or back‑to‑back options.</p>
+        </div>
+        <div class="card">
+          <h3>Rates</h3>
+          <p class="muted">Please <a href="#contact">contact me</a> for current rates and availability.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <h3>FAQ</h3>
+      <div class="grid cols-2">
+        <div class="card">
+          <h4 style="margin:0 0 6px">Where do sessions happen?</h4>
+          <p class="muted">At a quiet table in a public library (chosen together for convenience).</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px">What should students bring?</h4>
+          <p class="muted">Homework, recent tests/notes, a notebook, and a pencil. I’ll prepare extra practice if helpful.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px">Do you tutor online?</h4>
+          <p class="muted">Right now I focus on in‑person weekend sessions at the library.</p>
+        </div>
+        <div class="card">
+          <h4 style="margin:0 0 6px">What grades do you teach?</h4>
+          <p class="muted">Elementary to early high‑school basics (foundations and study skills).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Contact</h3>
+          <p class="badge" style="margin:0 0 10px">📞 +1 (226) 980‑9238</p>
+          <p class="badge" style="margin:0 0 14px">✉️ Mathbubby12@gmail.com</p>
+          <p class="muted">Send a message with your preferred weekend time and the library you’d like to meet at.</p>
+        </div>
+        <div class="card">
+          <h3>Quick Request Form</h3>
+          <form id="requestForm" novalidate>
+            <label>Parent/Guardian name
+              <input type="text" name="parent" placeholder="Your name" required />
+            </label>
+            <label>Student grade
+              <select name="grade" required>
+                <option value="" selected disabled>Choose…</option>
+                <option>Grade 3</option>
+                <option>Grade 4</option>
+                <option>Grade 5</option>
+                <option>Grade 6</option>
+                <option>Grade 7</option>
+                <option>Grade 8</option>
+                <option>Grade 9</option>
+              </select>
+            </label>
+            <label>Topics or goals
+              <textarea name="topics" rows="3" placeholder="Fractions, decimals, algebra basics, test prep…" required></textarea>
+            </label>
+            <label>Preferred weekend time
+              <select name="time">
+                <option>Saturday morning</option>
+                <option>Saturday afternoon</option>
+                <option>Sunday morning</option>
+                <option>Sunday afternoon</option>
+              </select>
+            </label>
+            <label>Library location
+              <input type="text" name="library" placeholder="e.g., Main Branch" />
+            </label>
+            <button class="btn primary" type="submit">Send request via email</button>
+            <div id="formMsg" class="fineprint" role="status"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:8px">
+            <span class="logo" aria-hidden="true">Mb</span>
+            <h2 style="margin:0">the mathbuddy</h2>
+          </div>
+          <p class="muted">Friendly, focused math help — weekends at the library.</p>
+        </div>
+        <div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end">
+            <a class="btn ghost" href="tel:+12269809238">Call</a>
+            <a class="btn ghost" href="mailto:Mathbubby12@gmail.com?subject=Math%20Tutoring%20Inquiry%20-%20the%20mathbuddy">Email</a>
+          </div>
+        </div>
+      </div>
+      <p class="fineprint" style="margin-top:16px">© <span id="year"></span> the mathbuddy — Logo name: Mathbuddy. All rights reserved.</p>
+    </footer>
+  </main>
+
+  <script>
+    // Smooth scroll for in-page anchors
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href');
+        if(id.length>1){
+          e.preventDefault();
+          document.querySelector(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      });
+    });
+
+    // Dynamic year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple form -> mailto composer
+    const form = document.getElementById('requestForm');
+    const msg = document.getElementById('formMsg');
+    form?.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const data = new FormData(form);
+      const parent = (data.get('parent')||'').toString().trim();
+      const grade = (data.get('grade')||'').toString();
+      const topics = (data.get('topics')||'').toString().trim();
+      const time = (data.get('time')||'').toString();
+      const library = (data.get('library')||'').toString().trim();
+
+      if(!parent || !grade || !topics){
+        msg.textContent = 'Please fill in parent/guardian name, student grade, and topics/goals.';
+        return;
+      }
+
+      const subject = encodeURIComponent('Math Tutoring Request — the mathbuddy');
+      const body = encodeURIComponent(
+        `Hi Hritvik,%0A%0AParent/Guardian: ${parent}%0AStudent grade: ${grade}%0ATopics/goals: ${topics}%0APreferred weekend time: ${time}%0ALibrary location: ${library}%0A%0AThanks!`
+      );
+      const href = `mailto:Mathbubby12@gmail.com?subject=${subject}&body=${body}`;
+
+      // Save a tiny breadcrumb of interest (privacy: local only)
+      try{
+        const leads = JSON.parse(localStorage.getItem('mb_leads')||'[]');
+        leads.push({t:Date.now(), parent, grade, time});
+        localStorage.setItem('mb_leads', JSON.stringify(leads));
+      }catch{}
+
+      window.location.href = href;
+      msg.textContent = 'Opening your email app… if nothing appears, you can email me at Mathbubby12@gmail.com';
+    });
+  </script>
+
+  <!-- Structured data for better discovery -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "the mathbuddy",
+      "brand": "Mathbuddy",
+      "description": "Weekend math tutoring at the library in Ottawa, Canada, by Hritvik (Grade 9, Earl of March HS). Friendly homework help and test prep.",
+      "areaServed": "Ottawa, Canada",
+      "telephone": "+1-226-980-9238",
+      "email": "Mathbubby12@gmail.com",
+      "founder": {"@type":"Person", "name":"Hritvik"},
+      "sameAs": [],
+      "serviceType": "Math tutoring"
+    }
+  </script>
+</body>
+</html>
