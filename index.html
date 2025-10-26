@@ -57,6 +57,10 @@
     .small{font-size:.9rem;color:var(--muted)}
     .close{cursor:pointer;float:right;opacity:.8}
     .copy{cursor:pointer}
+
+    /* Toast popup */
+    .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;transition:all .25s ease;z-index:80;background:rgba(0,0,0,.6);color:#fff;padding:12px 16px;border-radius:999px;border:1px solid var(--stroke);backdrop-filter: blur(8px) saturate(140%)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
@@ -79,7 +83,7 @@
     <section class="hero">
       <span class="pill">Afterschool and weekend math tutoring</span>
       <h2>Build math confidence with <em>MathsBuddy</em></h2>
-      <p>Hi! I’m <strong>Hritvik</strong>, a Grade 9 ace student at <strong>Earl of March High School</strong> in Canada. I love math and I love helping younger students understand it too — from homework help to test prep and problem-solving strategies.</p>
+      <p>Hi! I’m <strong>Vik</strong>, a Grade 9 ace student at <strong>Earl of March High School</strong> in Ottawa,Canada. I love math and I love helping younger students understand it too — from homework help to test prep and problem-solving strategies.</p>
       <div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
         <a class="btn primary" href="tel:+12269809238">📞 Call: +1 (226) 980-9238</a>
         <a class="btn ghost" id="emailDirectBtn" href="#">✉️ Email Me</a>
@@ -185,6 +189,9 @@
       </div>
     </div>
 
+    <!-- Toast popup container -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
     <footer>
       <p class="fineprint">© <span id="year"></span> MathsBuddy. All rights reserved.</p>
     </footer>
@@ -217,6 +224,7 @@
     const remember=document.getElementById('rememberChoice');
     const chooserClose=document.getElementById('chooserClose');
     const emailDirectBtn=document.getElementById('emailDirectBtn');
+    const toastEl=document.getElementById('toast');
 
     // ✅ Single source of truth for your inbox
     const TO = 'mathbuddy12@gmail.com';
@@ -224,6 +232,13 @@
     // Show the TO address in the modal copy element
     const copyAddr = document.getElementById('copyAddr');
     if(copyAddr){ copyAddr.textContent = '📋 ' + TO; }
+
+    function showToast(text){
+      if(!toastEl) return;
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      setTimeout(()=> toastEl.classList.remove('show'), 2600);
+    }
 
     function buildBody(parent,grade,locationSel,time,length,topics){
       return `Hi Hritvik,\n\n`+
@@ -257,7 +272,11 @@
         yahoo: `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`
       };
       const url = map[pref];
-      if(url){ if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); } return true; }
+      if(url){
+        if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); }
+        showToast('Thank you! I will get back to you.');
+        return true;
+      }
       return false;
     }
 
@@ -265,7 +284,7 @@
     chooserClose?.addEventListener('click',()=>{ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); });
     chooser?.addEventListener('click', (e)=>{ if(e.target===chooser){ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); } });
 
-    // Remember choice + force-open the chosen provider
+    // Remember choice + force-open the chosen provider (and show thank-you)
     [linkMailto,linkGmail,linkOutlook,linkYahoo].forEach(link=>{
       link.addEventListener('click',(e)=>{
         e.preventDefault();
@@ -274,6 +293,8 @@
         const url = link.getAttribute('href');
         if(id==='mailto'){ window.location.href = url; }
         else { window.open(url, '_blank', 'noopener'); }
+        showToast('Thank you! I will get back to you.');
+        chooser.classList.remove('open');
       });
     });
 
@@ -304,12 +325,13 @@
       if(!maybeAuto(subject, body)){
         openChooser(subject, body);
         msg.innerHTML = 'Choose your email app above. If nothing opens, you can also copy the address.';
+        // We show the toast after they pick a provider (handled in link click above)
       }
     });
 
     // Copy address
     copyAddr?.addEventListener('click', async ()=>{
-      try{ await navigator.clipboard.writeText(TO); alert('Email copied: '+TO); }catch{ alert('Copy failed. Email: '+TO); }
+      try{ await navigator.clipboard.writeText(TO); showToast('Email copied'); }catch{ showToast('Copy failed'); }
     });
 
     // --- Lightweight tests in console ---
@@ -318,7 +340,6 @@
       console.assert(shouldScroll('#request')===true, 'should scroll for #request');
       console.assert(shouldScroll('https://mail.google.com')===false, 'should not scroll for external URLs');
       console.assert(shouldScroll('mailto:test@example.com')===false, 'should not scroll for mailto links');
-      // Ensure recipient appears correctly
       console.assert(document.getElementById('copyAddr').textContent.includes('mathbuddy12@gmail.com'), 'TO shows in UI');
       console.log('[MathsBuddy] Inline tests passed');
     })();
