@@ -181,7 +181,7 @@
         <label class="small" style="display:flex;gap:8px;align-items:center;margin-top:6px">
           <input type="checkbox" id="rememberChoice" /> Remember my choice next time
         </label>
-        <p class="small" style="margin-top:10px">Or copy the address: <span id="copyAddr" class="copy" title="Copy email">📋 Mathbubby12@gmail.com</span></p>
+        <p class="small" style="margin-top:10px">Or copy the address: <span id="copyAddr" class="copy" title="Copy email"></span></p>
       </div>
     </div>
 
@@ -218,7 +218,13 @@
     const chooserClose=document.getElementById('chooserClose');
     const emailDirectBtn=document.getElementById('emailDirectBtn');
 
-    const TO = 'Mathbubby12@gmail.com';
+    // ✅ Single source of truth for your inbox
+    const TO = 'mathbuddy12@gmail.com';
+
+    // Show the TO address in the modal copy element
+    const copyAddr = document.getElementById('copyAddr');
+    if(copyAddr){ copyAddr.textContent = '📋 ' + TO; }
+
     function buildBody(parent,grade,locationSel,time,length,topics){
       return `Hi Hritvik,\n\n`+
       `Parent/Guardian: ${parent}\n`+
@@ -230,7 +236,6 @@
       `Thanks!`;
     }
     function openChooser(subject, body){
-      // Fill links
       const esub = encodeURIComponent(subject);
       const ebody = encodeURIComponent(body);
       linkMailto.setAttribute('href', `mailto:${TO}?subject=${esub}&body=${ebody}`);
@@ -252,11 +257,7 @@
         yahoo: `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`
       };
       const url = map[pref];
-      if(url){
-        // Open in a new tab for webmail or hand off to default app for mailto
-        if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); }
-        return true;
-      }
+      if(url){ if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); } return true; }
       return false;
     }
 
@@ -276,7 +277,7 @@
       });
     });
 
-    // "Email Me" button opens chooser (empty body with template)
+    // "Email Me" button opens chooser (empty body template)
     emailDirectBtn?.addEventListener('click',(e)=>{
       e.preventDefault();
       const subject='Math Tutoring Inquiry — MathsBuddy';
@@ -307,7 +308,7 @@
     });
 
     // Copy address
-    document.getElementById('copyAddr')?.addEventListener('click', async ()=>{
+    copyAddr?.addEventListener('click', async ()=>{
       try{ await navigator.clipboard.writeText(TO); alert('Email copied: '+TO); }catch{ alert('Copy failed. Email: '+TO); }
     });
 
@@ -317,6 +318,8 @@
       console.assert(shouldScroll('#request')===true, 'should scroll for #request');
       console.assert(shouldScroll('https://mail.google.com')===false, 'should not scroll for external URLs');
       console.assert(shouldScroll('mailto:test@example.com')===false, 'should not scroll for mailto links');
+      // Ensure recipient appears correctly
+      console.assert(document.getElementById('copyAddr').textContent.includes('mathbuddy12@gmail.com'), 'TO shows in UI');
       console.log('[MathsBuddy] Inline tests passed');
     })();
   </script>
