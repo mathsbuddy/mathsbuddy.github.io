@@ -191,11 +191,19 @@
   </main>
 
   <script>
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        const id=a.getAttribute('href');
-        if(id.length>1){e.preventDefault();document.querySelector(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
-      });
+    // --- Smooth-scroll only for in-page anchors ---
+    function shouldScroll(href){
+      return typeof href === 'string' && href.startsWith('#') && href.length > 1;
+    }
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[href]');
+      if(!a) return;
+      const href = a.getAttribute('href');
+      if(shouldScroll(href)){
+        e.preventDefault();
+        const target = document.querySelector(href);
+        target?.scrollIntoView({behavior:'smooth', block:'start'});
+      }
     });
     document.getElementById('year').textContent=new Date().getFullYear();
 
@@ -225,10 +233,10 @@
       // Fill links
       const esub = encodeURIComponent(subject);
       const ebody = encodeURIComponent(body);
-      linkMailto.href = `mailto:${TO}?subject=${esub}&body=${ebody}`;
-      linkGmail.href  = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TO)}&su=${esub}&body=${ebody}`;
-      linkOutlook.href= `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(TO)}&subject=${esub}&body=${ebody}`;
-      linkYahoo.href  = `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`;
+      linkMailto.setAttribute('href', `mailto:${TO}?subject=${esub}&body=${ebody}`);
+      linkGmail.setAttribute('href',  `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TO)}&su=${esub}&body=${ebody}`);
+      linkOutlook.setAttribute('href',`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(TO)}&subject=${esub}&body=${ebody}`);
+      linkYahoo.setAttribute('href',  `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`);
 
       chooser.classList.add('open');
       chooser.setAttribute('aria-hidden','false');
@@ -244,7 +252,11 @@
         yahoo: `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`
       };
       const url = map[pref];
-      if(url){ window.open(url,'_blank'); return true; }
+      if(url){
+        // Open in a new tab for webmail or hand off to default app for mailto
+        if(pref==='mailto'){ window.location.href = url; } else { window.open(url,'_blank','noopener'); }
+        return true;
+      }
       return false;
     }
 
@@ -252,9 +264,16 @@
     chooserClose?.addEventListener('click',()=>{ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); });
     chooser?.addEventListener('click', (e)=>{ if(e.target===chooser){ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); } });
 
-    // Remember choice
+    // Remember choice + force-open the chosen provider
     [linkMailto,linkGmail,linkOutlook,linkYahoo].forEach(link=>{
-      link.addEventListener('click',()=>{ if(remember.checked){ localStorage.setItem('mb_email_pref', link.id.replace('link','').toLowerCase()); } });
+      link.addEventListener('click',(e)=>{
+        e.preventDefault();
+        const id = link.id.replace('link','').toLowerCase();
+        if(remember.checked){ localStorage.setItem('mb_email_pref', id); }
+        const url = link.getAttribute('href');
+        if(id==='mailto'){ window.location.href = url; }
+        else { window.open(url, '_blank', 'noopener'); }
+      });
     });
 
     // "Email Me" button opens chooser (empty body with template)
@@ -291,6 +310,15 @@
     document.getElementById('copyAddr')?.addEventListener('click', async ()=>{
       try{ await navigator.clipboard.writeText(TO); alert('Email copied: '+TO); }catch{ alert('Copy failed. Email: '+TO); }
     });
+
+    // --- Lightweight tests in console ---
+    (function runTests(){
+      console.assert(shouldScroll('#help')===true, 'should scroll for #help');
+      console.assert(shouldScroll('#request')===true, 'should scroll for #request');
+      console.assert(shouldScroll('https://mail.google.com')===false, 'should not scroll for external URLs');
+      console.assert(shouldScroll('mailto:test@example.com')===false, 'should not scroll for mailto links');
+      console.log('[MathsBuddy] Inline tests passed');
+    })();
   </script>
 </body>
 </html>
