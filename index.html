@@ -7,13 +7,7 @@
   <meta name="description" content="One-to-one math tutoring by Hritvik (Grade 9, Earl of March HS). Afterschool and weekends at libraries & community places." />
   <meta name="theme-color" content="#0ea5a6" />
   <style>
-    :root{
-      --teal:#0ea5a6; --teal-dark:#0b8485; --teal-900:#0a6b6c;
-      --bg:linear-gradient(135deg,#0ea5a6,#0b8485 60%,#0a6b6c);
-      --white:#fff; --ink:#f8fafc; --muted:rgba(255,255,255,.85);
-      --card:rgba(255,255,255,.08); --stroke:rgba(255,255,255,.18);
-      --shadow:0 10px 30px rgba(0,0,0,.25); --r:22px;
-    }
+    :root{ --teal:#0ea5a6; --teal-dark:#0b8485; --teal-900:#0a6b6c; --bg:linear-gradient(135deg,#0ea5a6,#0b8485 60%,#0a6b6c); --white:#fff; --ink:#f8fafc; --muted:rgba(255,255,255,.85); --card:rgba(255,255,255,.08); --stroke:rgba(255,255,255,.18); --shadow:0 10px 30px rgba(0,0,0,.25); --r:22px; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink)}
@@ -54,7 +48,15 @@
 
     footer{padding:26px 0 38px;border-top:1px solid var(--stroke);margin-top:24px}
 
-    @media(max-width:900px){.cols-2{grid-template-columns:1fr}.links{display:none}.hero{padding-top:40px}}
+    /* Compose chooser modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:60}
+    .modal.open{display:flex}
+    .modal-card{background:var(--card);border:1px solid var(--stroke);backdrop-filter: blur(8px) saturate(140%);border-radius:16px;box-shadow:var(--shadow);padding:18px;max-width:520px;width:92%}
+    .modal-card h4{margin:0 0 8px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .small{font-size:.9rem;color:var(--muted)}
+    .close{cursor:pointer;float:right;opacity:.8}
+    .copy{cursor:pointer}
   </style>
 </head>
 <body>
@@ -80,7 +82,7 @@
       <p>Hi! I’m <strong>Hritvik</strong>, a Grade 9 ace student at <strong>Earl of March High School</strong> in Canada. I love math and I love helping younger students understand it too — from homework help to test prep and problem-solving strategies.</p>
       <div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
         <a class="btn primary" href="tel:+12269809238">📞 Call: +1 (226) 980-9238</a>
-        <a class="btn ghost" href="mailto:Mathbubby12@gmail.com?subject=Math%20Tutoring%20Inquiry%20-%20MathsBuddy">✉️ Email Me</a>
+        <a class="btn ghost" id="emailDirectBtn" href="#">✉️ Email Me</a>
       </div>
     </section>
 
@@ -164,6 +166,25 @@
       </div>
     </section>
 
+    <!-- Compose chooser modal -->
+    <div id="chooser" class="modal" aria-hidden="true" role="dialog" aria-label="Choose email app">
+      <div class="modal-card">
+        <div class="close" id="chooserClose">✕</div>
+        <h4>Choose how to send your email</h4>
+        <p class="small">Pick the option that matches the email you use.</p>
+        <div class="row" style="margin:12px 0">
+          <a id="linkMailto" class="btn primary" href="#">Default Mail app</a>
+          <a id="linkGmail" class="btn ghost" target="_blank" rel="noopener" href="#">Open in Gmail</a>
+          <a id="linkOutlook" class="btn ghost" target="_blank" rel="noopener" href="#">Open in Outlook</a>
+          <a id="linkYahoo" class="btn ghost" target="_blank" rel="noopener" href="#">Open in Yahoo</a>
+        </div>
+        <label class="small" style="display:flex;gap:8px;align-items:center;margin-top:6px">
+          <input type="checkbox" id="rememberChoice" /> Remember my choice next time
+        </label>
+        <p class="small" style="margin-top:10px">Or copy the address: <span id="copyAddr" class="copy" title="Copy email">📋 Mathbubby12@gmail.com</span></p>
+      </div>
+    </div>
+
     <footer>
       <p class="fineprint">© <span id="year"></span> MathsBuddy. All rights reserved.</p>
     </footer>
@@ -180,6 +201,71 @@
 
     const form=document.getElementById('requestForm');
     const msg=document.getElementById('formMsg');
+    const chooser=document.getElementById('chooser');
+    const linkMailto=document.getElementById('linkMailto');
+    const linkGmail=document.getElementById('linkGmail');
+    const linkOutlook=document.getElementById('linkOutlook');
+    const linkYahoo=document.getElementById('linkYahoo');
+    const remember=document.getElementById('rememberChoice');
+    const chooserClose=document.getElementById('chooserClose');
+    const emailDirectBtn=document.getElementById('emailDirectBtn');
+
+    const TO = 'Mathbubby12@gmail.com';
+    function buildBody(parent,grade,locationSel,time,length,topics){
+      return `Hi Hritvik,\n\n`+
+      `Parent/Guardian: ${parent}\n`+
+      `Student grade: ${grade}\n`+
+      `Location: ${locationSel}\n`+
+      `Preferred time: ${time}\n`+
+      `Session length: ${length}\n`+
+      `Topics/goals: ${topics}\n\n`+
+      `Thanks!`;
+    }
+    function openChooser(subject, body){
+      // Fill links
+      const esub = encodeURIComponent(subject);
+      const ebody = encodeURIComponent(body);
+      linkMailto.href = `mailto:${TO}?subject=${esub}&body=${ebody}`;
+      linkGmail.href  = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TO)}&su=${esub}&body=${ebody}`;
+      linkOutlook.href= `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(TO)}&subject=${esub}&body=${ebody}`;
+      linkYahoo.href  = `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`;
+
+      chooser.classList.add('open');
+      chooser.setAttribute('aria-hidden','false');
+    }
+    function maybeAuto(subject, body){
+      const pref = localStorage.getItem('mb_email_pref');
+      if(!pref) return false;
+      const esub = encodeURIComponent(subject); const ebody = encodeURIComponent(body);
+      const map = {
+        mailto: `mailto:${TO}?subject=${esub}&body=${ebody}`,
+        gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(TO)}&su=${esub}&body=${ebody}`,
+        outlook: `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(TO)}&subject=${esub}&body=${ebody}`,
+        yahoo: `https://compose.mail.yahoo.com/?to=${encodeURIComponent(TO)}&subj=${esub}&body=${ebody}`
+      };
+      const url = map[pref];
+      if(url){ window.open(url,'_blank'); return true; }
+      return false;
+    }
+
+    // Close modal
+    chooserClose?.addEventListener('click',()=>{ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); });
+    chooser?.addEventListener('click', (e)=>{ if(e.target===chooser){ chooser.classList.remove('open'); chooser.setAttribute('aria-hidden','true'); } });
+
+    // Remember choice
+    [linkMailto,linkGmail,linkOutlook,linkYahoo].forEach(link=>{
+      link.addEventListener('click',()=>{ if(remember.checked){ localStorage.setItem('mb_email_pref', link.id.replace('link','').toLowerCase()); } });
+    });
+
+    // "Email Me" button opens chooser (empty body with template)
+    emailDirectBtn?.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const subject='Math Tutoring Inquiry — MathsBuddy';
+      const body = buildBody('','','','','','');
+      if(!maybeAuto(subject, body)) openChooser(subject, body);
+    });
+
+    // Form submit -> open chooser with filled message
     form?.addEventListener('submit',(e)=>{
       e.preventDefault();
       const data=new FormData(form);
@@ -190,12 +276,20 @@
       const time=(data.get('time')||'').toString();
       const length=(data.get('length')||'').toString();
       if(!parent||!grade||!topics||!locationSel||!time||!length){
-        msg.textContent='Please fill in all required fields: name, grade, location, time, session length, and topics.';return;
+        msg.textContent='Please fill in all required fields: name, grade, location, preferred time, session length, and topics.';return;
       }
-      const subject=encodeURIComponent('Math Tutoring Request — MathsBuddy');
-      const body=encodeURIComponent(`Hi Hritvik,%0A%0AParent/Guardian: ${parent}%0AStudent grade: ${grade}%0ALocation: ${locationSel}%0APreferred time: ${time}%0ASession length: ${length}%0ATopics/goals: ${topics}%0A%0AThanks!`);
-      window.location.href=`mailto:Mathbubby12@gmail.com?subject=${subject}&body=${body}`;
-      msg.textContent='Opening your email app… if nothing appears, email me at Mathbubby12@gmail.com';
+      const subject='Math Tutoring Request — MathsBuddy';
+      const body = buildBody(parent,grade,locationSel,time,length,topics);
+
+      if(!maybeAuto(subject, body)){
+        openChooser(subject, body);
+        msg.innerHTML = 'Choose your email app above. If nothing opens, you can also copy the address.';
+      }
+    });
+
+    // Copy address
+    document.getElementById('copyAddr')?.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(TO); alert('Email copied: '+TO); }catch{ alert('Copy failed. Email: '+TO); }
     });
   </script>
 </body>
